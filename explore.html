@@ -14,124 +14,174 @@
     font-family:"Hanken Grotesk",sans-serif;
     color:#0f172a;
   }
-  .container { max-width:1100px; margin:30px auto; padding:24px; }
 
-  /* Top bar */
-  .topbar { display:flex; justify-content:space-between; align-items:center; }
-  .brand { font-weight:900; letter-spacing:6px; font-size:20px; }
-  .top-controls { display:flex; gap:14px; }
-  .toggle-btn,.dev-btn {
-    padding:8px 12px; border-radius:8px; cursor:pointer;
-    border:1px solid transparent; font-weight:600;
+  /* TOPBAR */
+  .topbar {
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 20px;
+    background:white;
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+    position:sticky;
+    top:0;
+    z-index:50;
   }
-  .toggle-btn { background:rgba(255,255,255,0.5); }
-  .dev-btn { background:transparent; color:#777; }
 
-  /* Project cards */
+  .brand {
+    font-weight:900;
+    font-size:22px;
+    letter-spacing:4px;
+  }
+
+  .top-controls {
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .btn {
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    border:1px solid #ccc;
+    background:#fff;
+  }
+
+  .container {
+    max-width:1100px;
+    margin:30px auto;
+    padding:20px;
+  }
+
+  /* PROJECT CARDS */
   .project-card {
     background:white;
     padding:18px;
     border-radius:12px;
     box-shadow:0 6px 18px rgba(0,0,0,0.07);
     margin-bottom:20px;
-    position:relative;
   }
 
   .topic { font-size:22px; font-weight:900; text-align:right; }
-  .theme { font-size:14px; color:#666; text-align:right; margin-top:4px; }
+  .theme { font-size:14px; color:#666; text-align:right; }
 
-  .subject { font-size:14px; font-weight:600; margin-top:12px; text-align:left; }
+  .subject { margin-top:10px; font-size:14px; font-weight:600; }
 
-  .leader-block { text-align:right; margin-top:12px; }
+  .leader-block {
+    margin-top:12px;
+    text-align:right;
+  }
+
   .leader-block div { margin-bottom:4px; }
 
   .class-sec {
     margin-top:12px;
     font-size:13px;
     font-weight:600;
-    color:#444;
+    color:#333;
+  }
+
+  /* DARK MODE */
+  [data-theme="dark"] {
+    background:#0f172a;
+    color:#fff;
+  }
+  [data-theme="dark"] .topbar {
+    background:#1e293b;
+    color:white;
+    box-shadow:none;
+  }
+  [data-theme="dark"] .project-card {
+    background:#273349;
+    box-shadow:none;
   }
 </style>
 
-<!-- SheetJS for reading Excel -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
 </head>
+
 <body>
 
+<!-- TOP NAV -->
+<header class="topbar">
+  <div class="brand">Y-I-Expo</div>
+
+  <div class="top-controls">
+    <button class="btn" onclick="history.back()">← Back</button>
+    <button class="btn" id="themeToggle">Dark/Light</button>
+    <button class="btn" onclick="location.href='dev.html'">Developer</button>
+  </div>
+</header>
+
 <div class="container">
+  <h1 style="text-align:center;">Explore Projects</h1>
 
-  <!-- Top Navigation -->
-  <header class="topbar">
-    <div class="brand">Y-I-Expo</div>
-    <div class="top-controls">
-      <button class="toggle-btn" id="themeToggle">Dark/Light</button>
-      <button class="dev-btn" onclick="location.href='dev.html'">Developer</button>
-    </div>
-  </header>
-
-  <h1 style="text-align:center;margin-top:30px;">Explore Projects</h1>
-
-  <div id="projectList" style="margin-top:30px;"></div>
-
+  <div id="projectList"></div>
+  <div id="errorBox" style="color:red;font-weight:600;margin-top:20px;"></div>
 </div>
-
 
 
 <script>
 /* ============================
-   DARK-LIGHT MODE
+   DARK MODE TOGGLE
 ============================ */
 document.getElementById("themeToggle").onclick = () => {
-  const d = document.documentElement.getAttribute("data-theme")==="dark";
-  document.documentElement.setAttribute("data-theme", d?"":"dark");
+  const nowDark = document.documentElement.getAttribute("data-theme") === "dark";
+  document.documentElement.setAttribute("data-theme", nowDark ? "" : "dark");
 };
 
 
-
 /* ============================
-   LOAD & PARSE EXCEL
+   LOAD EXCEL (CASE FIXED)
 ============================ */
-fetch("projects.xlsx")
-  .then(res => res.arrayBuffer())
-  .then(buffer => {
-    const wb = XLSX.read(buffer, { type:"array" });
+
+fetch("Projects.xlsx")  // Make sure the name matches EXACTLY
+  .then(r => {
+    if (!r.ok) {
+      document.getElementById("errorBox").innerHTML = "⚠ Could not load Projects.xlsx";
+    }
+    return r.arrayBuffer();
+  })
+  .then(buf => {
+    const wb = XLSX.read(buf, { type: "array" });
     const sheet = wb.SheetNames[0];
-    const data = XLSX.utils.sheet_to_json(wb.Sheets[sheet]);
-    renderProjects(data);
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheet]);
+    renderProjects(rows);
+  })
+  .catch(err => {
+    document.getElementById("errorBox").innerHTML =
+      "⚠ Error loading Excel file: " + err.message;
   });
 
+
 /* ============================
-   RENDER PROJECT CARDS
+   RENDER CARDS
 ============================ */
-function renderProjects(rows){
-  const box = document.getElementById("projectList");
-  box.innerHTML="";
+function renderProjects(rows) {
+  const list = document.getElementById("projectList");
+  list.innerHTML = "";
 
-  rows.forEach(row=>{
-    let participantsList = "";
-
-    if(row.Participants){
-      participantsList = row.Participants
-        .split(",")
-        .map(p => `<div>${p.trim()}</div>`)
-        .join("");
-    }
-
+  rows.forEach(row => {
     const div = document.createElement("div");
     div.className = "project-card";
 
+    const participants = row.Participants
+      ? row.Participants.split(",").map(p => `<div>${p.trim()}</div>`).join("")
+      : "";
+
     div.innerHTML = `
       <div class="topic">${row.Topic || ""}</div>
-
       <div class="theme">${row.Theme || ""}</div>
 
       <div class="subject">${row.Subject || ""}</div>
 
       <div class="leader-block">
         <div><strong>Leader:</strong> ${row.Leader || ""}</div>
-        <div><strong>Participants:</strong></div>
-        <div>${participantsList}</div>
+        <strong>Participants:</strong>
+        ${participants}
       </div>
 
       <div class="class-sec">
@@ -139,34 +189,32 @@ function renderProjects(rows){
       </div>
     `;
 
-    box.appendChild(div);
+    list.appendChild(div);
   });
 }
 
 
-
 /* ============================
-   DISABLE INSPECT & RIGHT-CLICK
+   DISABLE INSPECT
 ============================ */
 document.addEventListener("contextmenu", e => e.preventDefault());
 
 document.addEventListener("keydown", function(e){
-  if(
+  if (
     e.key === "F12" ||
     (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) ||
     (e.ctrlKey && e.key === "U") ||
     (e.ctrlKey && e.key === "S")
-  ){
+  ) {
     e.preventDefault();
   }
 });
 
-/* Anti-debugger loop */
 setInterval(function(){
   const before = new Date();
   debugger;
-  if(new Date() - before > 50){
-    document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;'>Unauthorized Access Blocked</h1>";
+  if (new Date() - before > 50) {
+    document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;'>Access Blocked</h1>";
   }
 }, 2000);
 </script>
