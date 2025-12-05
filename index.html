@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Youth Innovation Expo — Home</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f7f8fb;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#0f172a;
+      --accent-2:#0b6ea8;
+      --glass:rgba(255,255,255,0.6);
+      --radius:12px;
+    }
+    [data-theme="dark"]{
+      --bg:#0b1220;
+      --card:#071021;
+      --muted:#9aa7b7;
+      --accent:#e6eef9;
+      --accent-2:#78b7e0;
+      --glass:rgba(255,255,255,0.04);
+    }
+
+    body{
+      margin:0;background:var(--bg);color:var(--accent);
+      font-family:"Hanken Grotesk",sans-serif;
+    }
+    .container{max-width:1150px;margin:30px auto;padding:24px;}
+
+    /* Top bar */
+    .topbar{display:flex;justify-content:space-between;align-items:center;}
+    .brand{font-weight:900;letter-spacing:6px;font-size:20px;}
+    .top-controls{display:flex;align-items:center;gap:14px;}
+    .toggle-btn,.dev-btn{
+      padding:8px 12px;border-radius:8px;cursor:pointer;
+      border:1px solid transparent;font-weight:600;
+    }
+    .toggle-btn{background:var(--glass);}
+    .dev-btn{background:transparent;color:var(--muted);}
+
+    /* Hero */
+    .hero{text-align:center;margin:30px 0;}
+    .hero h1{margin:0;font-size:36px;font-weight:800;letter-spacing:2px;}
+    .sub{font-size:14px;color:var(--muted);margin-top:8px;display:block;}
+
+    /* Explore + Search */
+    .row{display:flex;justify-content:center;gap:12px;margin-bottom:26px;flex-wrap:wrap;}
+    .explore-btn,.search-btn{
+      padding:10px 18px;border-radius:10px;text-decoration:none;
+      font-weight:700;border:none;cursor:pointer;
+    }
+    .explore-btn{background:var(--accent-2);color:white;}
+    .search-btn{background:var(--accent);color:white;}
+
+    /* Modal search popup */
+    .modal-bg{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.45);display:none;
+      align-items:center;justify-content:center;z-index:20;
+    }
+    .modal{
+      background:var(--card);padding:22px;border-radius:12px;min-width:260px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.2);
+    }
+    .modal h3{text-align:center;margin-top:0;}
+    .modal select,.modal input{
+      width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;
+      background:transparent;color:var(--accent);
+    }
+    .modal button{
+      width:100%;padding:10px;border-radius:8px;background:var(--accent);
+      color:white;font-weight:700;border:none;cursor:pointer;margin-top:8px;
+    }
+
+    /* Featured */
+    .featured-heading{
+      font-style:italic;font-weight:800;font-size:20px;margin:20px 0 16px;
+      text-align:left;
+    }
+
+    .featured-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;
+    }
+
+    .card{
+      padding:18px;position:relative;border-radius:12px;
+      background:var(--card);box-shadow:0 6px 18px rgba(2,6,23,0.06);
+      min-height:140px;display:flex;flex-direction:column;justify-content:space-between;
+    }
+
+    .topic{
+      position:absolute;left:18px;top:16px;font-size:22px;font-weight:900;
+    }
+
+    .theme{
+      position:absolute;right:18px;top:14px;font-size:12px;color:var(--muted);
+      max-width:45%;text-align:right;
+    }
+
+    .subject{
+      position:absolute;left:18px;bottom:16px;font-size:12px;color:var(--muted);
+    }
+
+    .leader-block{
+      position:absolute;right:18px;bottom:16px;text-align:right;
+    }
+    .leader{font-size:13px;font-weight:700;}
+
+    .arrow-btn{
+      margin-top:4px;display:inline-block;font-size:20px;
+      text-decoration:none;color:var(--accent-2);font-weight:900;
+    }
+
+  </style>
+</head>
+
+<body>
+<div class="container" id="page">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">Y-I-Expo</div>
+
+    <div class="top-controls">
+      <button class="toggle-btn" id="themeToggle">Dark/Light</button>
+      <button class="dev-btn" onclick="location.href='dev.html'">Developer</button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>YOUTH INNOVATION EXPO</h1>
+    <span class="sub">by Eksy</span>
+  </section>
+
+  <!-- EXPLORE + SEARCH -->
+  <div class="row">
+    <a href="explore.html" class="explore-btn">Explore</a>
+    <button class="search-btn" id="openSearch">Search</button>
+  </div>
+
+  <!-- SEARCH POPUP MODAL -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <h3>Search Projects</h3>
+
+      <select id="subject" required>
+        <option value="">Select subject *</option>
+        <option>Moral Education</option>
+        <option>English</option>
+        <option>Hindi</option>
+        <option>Sanskrit</option>
+        <option>Mathematics</option>
+        <option>Artificial Intelligence</option>
+        <option>Information Technology</option>
+        <option>Physics</option>
+        <option>Chemistry</option>
+        <option>Biology</option>
+        <option>Social Science</option>
+      </select>
+
+      <select id="class" required>
+        <option value="">Select class *</option>
+        <option>Class 9</option>
+        <option>Class 10</option>
+        <option>Class 11</option>
+        <option>Class 12</option>
+      </select>
+
+      <input type="text" id="leader" placeholder="Leader (optional)" />
+
+      <button onclick="submitSearch()">Search</button>
+      <button onclick="closeModal()" style="background:#aaa;margin-top:6px;">Close</button>
+    </div>
+  </div>
+
+  <!-- FEATURED -->
+  <div class="featured-heading">FEATURED</div>
+
+  <div class="featured-grid">
+
+    <!-- Card Example -->
+    <div class="card">
+      <div class="topic">SOLAR <br> CLEANER</div>
+      <div class="theme">A low-cost device to remove microplastics</div>
+
+      <div class="subject">Environmental Science</div>
+
+      <div class="leader-block">
+        <div class="leader">A. Sharma</div>
+        <a href="feature.html" class="arrow-btn">&#8595;</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="topic">ROBO <br> GARDEN</div>
+      <div class="theme">Automatic plant care system</div>
+
+      <div class="subject">Computer Science</div>
+
+      <div class="leader-block">
+        <div class="leader">M. Kaur</div>
+        <a href="feature.html" class="arrow-btn">&#8595;</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="topic">BIOFILTER</div>
+      <div class="theme">Natural, low-cost water purification</div>
+
+      <div class="subject">Biology</div>
+
+      <div class="leader-block">
+        <div class="leader">S. Patel</div>
+        <a href="feature.html" class="arrow-btn">&#8595;</a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  /* Theme Toggle */
+  const toggle = document.getElementById('themeToggle');
+  toggle.addEventListener('click',()=>{
+    const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
+  });
+
+  /* Modal Logic */
+  const modalBg=document.getElementById('modalBg');
+  const openBtn=document.getElementById('openSearch');
+
+  openBtn.onclick=()=>{modalBg.style.display="flex";}
+  function closeModal(){modalBg.style.display="none";}
+
+  /* Search Submit */
+  function submitSearch(){
+    const subject=document.getElementById('subject').value;
+    const cls=document.getElementById('class').value;
+    const leader=document.getElementById('leader').value;
+
+    if(!subject || !cls){
+      alert("Subject and Class are required.");
+      return;
+    }
+
+    const params=new URLSearchParams({subject, class:cls});
+    if(leader.trim()) params.set("leader", leader);
+
+    window.location.href="explore.html?"+params.toString();
+  }
+</script>
+
+</body>
+</html>
