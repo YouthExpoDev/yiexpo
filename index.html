@@ -135,7 +135,7 @@
   <!-- HERO -->
   <section class="hero">
     <h1>YOUTH INNOVATION EXPO</h1>
-    <span class="sub">by Eksy</span>
+    <span class="sub">by DAVPS, Jbd</span>
   </section>
 
   <!-- EXPLORE + SEARCH -->
@@ -226,6 +226,29 @@
 </div>
 
 <script>
+   // Disable Right-Click
+  document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+  });
+
+  // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U
+  document.addEventListener("keydown", function (e) {
+    if (
+      e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+      (e.ctrlKey && e.key === "U")
+    ) {
+      e.preventDefault();
+    }
+  });
+
+  // Optional: Disable Ctrl+S (save page)
+  document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey && e.key === "s") {
+      e.preventDefault();
+    }
+  });
+  
   /* Theme Toggle */
   const toggle = document.getElementById('themeToggle');
   toggle.addEventListener('click',()=>{
@@ -260,3 +283,4 @@
 
 </body>
 </html>
+
