@@ -1,133 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Explore Projects - Youth Innovation Expo</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore Projects</title>
+<link rel="stylesheet" href="style.css">
 
-    <!-- Disable Inspect + Right Click -->
-    <script>
-        document.addEventListener("contextmenu", e => e.preventDefault());
-        document.addEventListener("keydown", e => {
-            if (
-                e.key === "F12" ||
-                (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) ||
-                (e.ctrlKey && e.key === "U")
-            ) {
-                e.preventDefault();
-            }
-        });
-    </script>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding-top: 70px;
+    }
 
-    <style>
-        /* TEMP BASIC STRUCTURE — your style.css will override this */
-        body { margin: 0; font-family: Arial; background: #f8f8f8; }
-        .navbar {
-            width: 100%; background: #222; color: white; padding: 15px 25px;
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 10;
-        }
-        .nav-title { font-family: 'HK Modular', sans-serif; font-size: 26px; }
-        .nav-right button {
-            margin-left: 10px; padding: 8px 15px; border: none; cursor: pointer;
-            background: #444; color: white; border-radius: 5px;
-        }
-        #projects-container { padding: 20px; }
-        .project-card {
-            background: white; padding: 20px; border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px;
-        }
-        .project-topic { text-align: right; font-size: 22px; margin: 0; }
-        .project-theme { text-align: right; color: #555; margin: 5px 0 15px 0; }
-        .left-info { float: left; font-weight: bold; }
-        .right-info { text-align: right; }
-        .bottom-info { margin-top: 20px; font-size: 14px; color: #666; }
-        .clearfix::after { content: ""; display: block; clear: both; }
-    </style>
+    /* MENU BAR */
+    .navbar {
+        width: 100%;
+        height: 60px;
+        background: #111;
+        color: white;
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        z-index: 1000;
+    }
+
+    .navbar-left {
+        font-size: 24px;
+        font-weight: bold;
+        font-family: 'HK Modular', sans-serif;
+    }
+
+    .navbar-right {
+        display: flex;
+        gap: 20px;
+    }
+
+    .navbar-right button, .navbar-right a {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .project-card {
+        width: 90%;
+        margin: 20px auto;
+        padding: 15px;
+        border-radius: 10px;
+        background: #f4f4f4;
+        box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+
+    .topic {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .theme {
+        font-size: 16px;
+        margin-top: 4px;
+        text-align: right;
+    }
+
+    .subject {
+        font-size: 16px;
+        margin-top: 10px;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .leader {
+        font-size: 17px;
+        font-weight: bold;
+        text-align: right;
+        margin-top: 10px;
+    }
+
+    .participants {
+        font-size: 15px;
+        white-space: pre-line;
+        margin-top: 5px;
+        text-align: right;
+    }
+
+    .class-sec {
+        font-size: 14px;
+        text-align: left;
+        margin-top: 10px;
+        color: #333;
+    }
+</style>
 </head>
 
 <body>
 
-    <!-- NAVIGATION BAR -->
-    <div class="navbar">
-        <div class="nav-title">Y-I-Expo</div>
+<!-- MENU BAR -->
+<div class="navbar">
+    <div class="navbar-left">Y-I-Expo</div>
 
-        <div class="nav-right">
-            <button onclick="location.href='index.html'">Home</button>
-            <button onclick="history.back()">Back</button>
-            <button onclick="location.href='dev.html'">Developer</button>
-        </div>
+    <div class="navbar-right">
+        <button onclick="window.history.back()">Go Back</button>
+        <a href="dev.html">Developer</a>
+        <button onclick="toggleTheme()">Mode</button>
     </div>
+</div>
 
-    <h1 style="text-align:center; margin-top:20px;">Explore Projects</h1>
+<h2 style="text-align:center;">Explore All Projects</h2>
 
-    <div id="projects-container"></div>
+<div id="projectContainer"></div>
 
-    <!-- FETCH DATA FROM GOOGLE SHEETS -->
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
 
-        // ⭐ CHANGE ONLY THIS LINE IF YOU EVER CHANGE THE SHEET
-        const SHEET_ID = "1ZQ1g4MwSgCeRuer6gNx6_BY3eit7kddCWjWgDmgTpfA";
+<script>
+// DARK / LIGHT MODE
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+}
 
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+// DISABLE INSPECT + RIGHT CLICK
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("keydown", e => {
+    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I","C","J"].includes(e.key)) || (e.ctrlKey && e.key === "U")) {
+        e.preventDefault();
+    }
+});
 
-        fetch(url)
-            .then(res => res.text())
-            .then(text => {
+// FETCH DATA FROM GOOGLE SHEET
+const sheetID = "1ZQ1g4MwSgCeRuer6gNx6_BY3eit7kddCWjWgDmgTpfA";
+const sheetName = "Form_Responses";
+const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
 
-                // Google wraps JSON inside weird JS → we extract clean JSON
-                const json = JSON.parse(text.substring(47, text.length - 2));
+fetch(url)
+    .then(res => res.text())
+    .then(data => {
+        const json = JSON.parse(data.substr(47).slice(0, -2));
+        const rows = json.table.rows;
 
-                const rows = json.table.rows;
-                const cols = json.table.cols.map(col => col.label);
+        const container = document.getElementById("projectContainer");
 
-                const container = document.getElementById("projects-container");
-                container.innerHTML = "";
+        rows.forEach(row => {
+            const c = row.c;
 
-                rows.forEach(r => {
+            if (!c[1] || !c[2] || !c[3]) return; // ignore empty rows
 
-                    const row = {};
-                    cols.forEach((col, i) => {
-                        row[col] = r.c[i] ? r.c[i].v : "";
-                    });
+            const subject = c[1].v || "";
+            const topic = c[2].v || "";
+            const theme = c[3].v || "";
+            const className = c[4].v || "";
+            const leader = c[5].v || "";
+            const section = c[6].v || "";
 
-                    // Detect all "Participant..." columns
-                    const participants = Object.keys(row)
-                        .filter(k => k.toLowerCase().startsWith("participant"))
-                        .map(k => row[k])
-                        .filter(name => name && name.trim() !== "")
-                        .join(", ");
+            // collect participants dynamic
+            let participants = [];
+            for (let i = 7; i < c.length; i++) {
+                if (c[i] && c[i].v) participants.push(c[i].v);
+            }
 
-                    const card = document.createElement("div");
-                    card.className = "project-card clearfix";
+            const projectHTML = `
+                <div class="project-card">
+                    <div class="topic">${topic}</div>
+                    <div class="theme">${theme}</div>
+                    <div class="subject">${subject}</div>
+                    <div class="leader">Leader: ${leader}</div>
+                    <div class="participants">${participants.join("\n")}</div>
+                    <div class="class-sec">Class: ${className} — Section: ${section}</div>
+                </div>
+            `;
 
-                    card.innerHTML = `
-                        <h2 class="project-topic">${row["Topic"] || "No Topic"}</h2>
-                        <p class="project-theme">${row["Theme"] || ""}</p>
-
-                        <div class="left-info">
-                            <p>${row["Subject"] || ""}</p>
-                        </div>
-
-                        <div class="right-info">
-                            <p><strong>Leader:</strong> ${row["Leader"] || ""}</p>
-                            <p><strong>Participants:</strong> ${participants}</p>
-                        </div>
-
-                        <div class="bottom-info">
-                            <p>Class: ${row["Class"] || ""} | Section: ${row["Section"] || ""}</p>
-                        </div>
-                    `;
-
-                    container.appendChild(card);
-                });
-
-            })
-            .catch(err => console.error("Error fetching data:", err));
-    });
-    </script>
+            container.innerHTML += projectHTML;
+        });
+    })
+    .catch(err => console.error("Fetch error:", err));
+</script>
 
 </body>
 </html>
