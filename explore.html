@@ -59,7 +59,6 @@
 
         <div class="nav-right">
             <button onclick="location.href='index.html'">Home</button>
-            <button onclick="history.back()">Back</button>
             <button onclick="location.href='dev.html'">Developer</button>
         </div>
     </div>
@@ -71,7 +70,7 @@
     <!-- DATA FETCH SCRIPT -->
     <script>
     document.addEventListener("DOMContentLoaded", function () {
-        fetch("Projects.xlsx")
+        fetch("projects.xlsx")
             .then(r => r.arrayBuffer())
             .then(data => {
 
@@ -122,3 +121,4 @@
 
 </body>
 </html>
+
