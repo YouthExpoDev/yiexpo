@@ -1,52 +1,124 @@
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    fetch("projects.xlsx")
-        .then((response) => response.arrayBuffer())
-        .then((data) => {
-            const workbook = XLSX.read(data, { type: "array" });
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            const json = XLSX.utils.sheet_to_json(sheet);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Projects - Youth Innovation Expo</title>
+    <link rel="stylesheet" href="style.css">
 
-            const container = document.getElementById("projects-container");
-            container.innerHTML = "";
+    <!-- Disable Inspect + Right Click -->
+    <script>
+        document.addEventListener("contextmenu", e => e.preventDefault());
+        document.addEventListener("keydown", e => {
+            if (
+                e.key === "F12" ||
+                (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) ||
+                (e.ctrlKey && e.key === "U")
+            ) {
+                e.preventDefault();
+            }
+        });
+    </script>
 
-            json.forEach((row) => {
-                // === DETECT PARTICIPANT COLUMNS ===
-                const participants = Object.keys(row)
-                    .filter(key => key.toLowerCase().startsWith("participant"))
-                    .map(key => row[key])
-                    .filter(name => name && name.trim() !== "")
-                    .join(", ");  // <-- comma-separated participants
+    <style>
+        /* TEMP BASIC STRUCTURE — your main CSS will override this */
+        body { margin: 0; font-family: Arial; background: #f8f8f8; }
+        .navbar {
+            width: 100%; background: #222; color: white; padding: 15px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 10;
+        }
+        .nav-title { font-family: 'HK Modular', sans-serif; font-size: 26px; }
+        .nav-right button {
+            margin-left: 10px; padding: 8px 15px; border: none; cursor: pointer;
+            background: #444; color: white; border-radius: 5px;
+        }
+        #projects-container { padding: 20px; }
+        .project-card {
+            background: white; padding: 20px; border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px;
+        }
+        .project-topic { text-align: right; font-size: 22px; margin: 0; }
+        .project-theme { text-align: right; color: #555; margin: 5px 0 15px 0; }
+        .left-info { float: left; font-weight: bold; }
+        .right-info { text-align: right; }
+        .bottom-info { margin-top: 20px; font-size: 14px; color: #666; }
+        .clearfix::after { content: ""; display: block; clear: both; }
+    </style>
 
-                // === CREATE PROJECT CARD ===
-                const card = document.createElement("div");
-                card.className = "project-card";
+    <!-- XLSX Library -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
-                card.innerHTML = `
-                    <div class="project-content">
+</head>
+
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <div class="navbar">
+        <div class="nav-title">Y-I-Expo</div>
+
+        <div class="nav-right">
+            <button onclick="location.href='index.html'">Home</button>
+            <button onclick="history.back()">Back</button>
+            <button onclick="location.href='dev.html'">Developer</button>
+        </div>
+    </div>
+
+    <h1 style="text-align:center; margin-top:20px;">Explore Projects</h1>
+
+    <div id="projects-container"></div>
+
+    <!-- DATA FETCH SCRIPT -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("Projects.xlsx")
+            .then(r => r.arrayBuffer())
+            .then(data => {
+
+                const workbook = XLSX.read(data, { type: "array" });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const rows = XLSX.utils.sheet_to_json(sheet);
+
+                const container = document.getElementById("projects-container");
+                container.innerHTML = "";
+
+                rows.forEach(row => {
+
+                    // AUTO-DETECT ALL PARTICIPANT COLUMNS
+                    const participants = Object.keys(row)
+                        .filter(key => key.toLowerCase().startsWith("participant"))
+                        .map(key => row[key])
+                        .filter(name => name && name.trim() !== "")
+                        .join(", ");
+
+                    const card = document.createElement("div");
+                    card.className = "project-card clearfix";
+
+                    card.innerHTML = `
                         <h2 class="project-topic">${row.Topic || "No Topic"}</h2>
                         <p class="project-theme">${row.Theme || ""}</p>
 
                         <div class="left-info">
-                            <p class="project-subject">${row.Subject || ""}</p>
+                            <p>${row.Subject || ""}</p>
                         </div>
 
                         <div class="right-info">
-                            <p class="leader-label"><strong>Leader:</strong> ${row.Leader || ""}</p>
-                            <p class="participants-label"><strong>Participants:</strong> ${participants}</p>
+                            <p><strong>Leader:</strong> ${row.Leader || ""}</p>
+                            <p><strong>Participants:</strong> ${participants}</p>
                         </div>
 
                         <div class="bottom-info">
-                            <p class="class-section">Class: ${row.Class || ""} | Section: ${row.Section || ""}</p>
+                            <p>Class: ${row.Class || ""} | Section: ${row.Section || ""}</p>
                         </div>
-                    </div>
-                `;
+                    `;
 
-                container.appendChild(card);
-            });
-        })
-        .catch((error) => console.error("Error loading spreadsheet:", error));
-});
-</script>
+                    container.appendChild(card);
+                });
+            })
+            .catch(err => console.error("Error loading spreadsheet:", err));
+    });
+    </script>
+
+</body>
+</html>
