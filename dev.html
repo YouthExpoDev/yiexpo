@@ -3,30 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Developer Introduction</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+    <title>Developer Profile</title>
     <style>
-        /* --- Global Reset and Variables --- */
-        :root {
-            /* Vibrant, light colors */
-            --color-primary: #ff6b6b; /* Coral Red */
-            --color-secondary: #48dbfb; /* Sky Blue */
-            
-            /* Light Backgrounds */
-            --color-background-start: #f5f5f5;
-            --color-background-end: #e0e0e0;
-            
-            /* Text Colors */
-            --color-text-dark: #2c3e50;
-            --color-text-light: #ffffff;
-            
-            --font-heading: 'Poppins', sans-serif;
-            --font-body: 'Roboto', sans-serif;
-        }
-
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Roboto:wght@300;400&display=swap');
-
         * {
             margin: 0;
             padding: 0;
@@ -34,174 +12,454 @@
         }
 
         body {
-            /* Light gradient background */
-            background: linear-gradient(135deg, var(--color-background-start), var(--color-background-end));
-            font-family: var(--font-body);
-            color: var(--color-text-dark);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            overflow: hidden;
         }
 
-        /* --- Profile Card Container (UX Premium) --- */
-        .profile-card {
-            max-width: 400px;
+        #intro-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            text-align: center;
-            background-color: var(--color-text-light);
-            border-radius: 20px;
-            padding: 40px 30px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            /* Initial Animation: Card enters smoothly */
-            animation: card-in 0.8s ease-out forwards;
+            height: 100%;
+            z-index: 9999;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            transition: opacity 0.5s;
+        }
+
+        #intro-canvas.fade-out {
             opacity: 0;
+            pointer-events: none;
         }
 
-        @keyframes card-in {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        /* --- Profile Image with Colorful Border --- */
-        .profile-image-wrapper {
+        #main-content {
+            opacity: 0;
+            transition: opacity 1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
             position: relative;
-            display: inline-block;
-            margin-bottom: 25px;
-            /* Gradient border effect */
-            background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
-            border-radius: 50%;
-            padding: 5px;
-            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.2);
-            /* Hover animation for the image */
-            transition: transform 0.3s ease;
-        }
-        
-        .profile-image-wrapper:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 0 6px rgba(72, 219, 251, 0.4);
         }
 
-        .profile-picture {
+        #main-content.visible {
+            opacity: 1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 48px 36px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1),
+                        0 0 0 1px rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(147, 51, 234, 0.03) 50%, 
+                transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .profile-image {
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            object-fit: cover;
-            display: block;
-            /* Inner border to separate from the gradient */
-            border: 5px solid var(--color-text-light);
-        }
-
-        /* --- Text Content --- */
-        .profile-name {
-            font-family: var(--font-heading);
-            font-size: 2.5em;
-            font-weight: 700;
-            color: var(--color-primary);
-            letter-spacing: -1px;
-            margin-bottom: 5px;
-            /* Text slide-in animation */
-            animation: text-slide 1s ease-out 0.2s forwards;
-            opacity: 0;
-        }
-
-        .profile-tagline {
-            font-family: var(--font-body);
-            font-size: 1.1em;
-            color: #7f8c8d; /* Light gray text */
-            margin-bottom: 30px;
-            font-weight: 300;
-            /* Text slide-in animation */
-            animation: text-slide 1s ease-out 0.4s forwards;
-            opacity: 0;
-        }
-
-        @keyframes text-slide {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- Contact Button (Premium UX) --- */
-        .contact-button {
-            display: inline-flex;
+            margin: 0 auto 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 14px 35px;
-            border: none;
-            border-radius: 50px;
-            /* Vibrant gradient background */
-            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-            color: var(--color-text-light);
-            text-decoration: none;
-            font-family: var(--font-heading);
-            font-weight: 700;
-            font-size: 1.1em;
-            cursor: pointer;
-            
-            /* Premium Hover/Click Transition */
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            font-size: 48px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.3);
+            position: relative;
+            animation: float 3s ease-in-out infinite;
         }
 
-        .contact-button i {
-            margin-right: 8px;
-            transition: transform 0.3s ease;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .profile-image::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2, #667eea);
+            background-size: 200%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        .profile-image:hover::after {
+            opacity: 1;
+        }
+
+        .name {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .tagline {
+            text-align: center;
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 36px;
+            font-weight: 400;
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-button {
+            width: 100%;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .contact-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .contact-button:hover::before {
+            left: 100%;
         }
 
         .contact-button:hover {
-            transform: translateY(-3px) scale(1.02);
-            /* Hover reverses gradient for dynamic effect */
-            background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
-            box-shadow: 0 8px 20px rgba(72, 219, 251, 0.5);
-        }
-        
-        .contact-button:hover i {
-            transform: translateX(5px);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.45);
         }
 
+        .contact-button:active {
+            transform: translateY(0);
+        }
 
-        /* --- Mobile Optimization --- */
+        .decorative-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            top: -150px;
+            right: -150px;
+        }
+
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            bottom: -100px;
+            left: -100px;
+        }
+
         @media (max-width: 480px) {
-            body {
-                align-items: flex-start; /* Start profile higher on small screens */
-                padding-top: 40px;
-            }
-            .profile-card {
-                padding: 30px 20px;
-                margin-top: 0;
+            .card {
+                padding: 40px 28px;
+                border-radius: 28px;
             }
 
-            .profile-name {
-                font-size: 2em;
+            .name {
+                font-size: 28px;
             }
 
-            .profile-picture {
+            .tagline {
+                font-size: 15px;
+            }
+
+            .profile-image {
                 width: 100px;
                 height: 100px;
-            }
-            
-            .contact-button {
-                width: 100%; /* Full width button for easy tapping */
+                font-size: 42px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="profile-card">
-        <div class="profile-image-wrapper">
-            <img src="ae1848e0d5b5a9c8801fd01ce775f687.jpg" alt="Developer Profile Picture" class="profile-picture">
-        </div>
-        
-        <h1 class="profile-name">Bhavya Sahrma</h1>
-        
-        <p class="profile-tagline">
-            Full-Stack Developer | Innovator | Crafting delightful digital experiences.
-        </p>
+    <canvas id="intro-canvas"></canvas>
 
-        <a href="thebhavya85@outlook.com" class="contact-button">
-            <i class="fas fa-envelope"></i> Email Me Directly
-        </a>
+    <div id="main-content">
+        <div class="decorative-circle circle-1"></div>
+        <div class="decorative-circle circle-2"></div>
+        
+        <div class="container">
+            <div class="card">
+                <div class="profile-image">
+                    D
+                </div>
+                <h1 class="name">Bhavya Sharma </h1>
+                <p class="tagline">
+                    Crafting digital experiences with clean code and creative vision
+                </p>
+                <a href="thebhavya85@outlook.com" class="contact-button">
+                    Get in Touch
+                </a>
+            </div>
+        </div>
     </div>
+
+    <script>
+        const canvas = document.getElementById('intro-canvas');
+        const ctx = canvas.getContext('2d');
+        const mainContent = document.getElementById('main-content');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const NAME = "Bhavya"; // Change this to your name
+        const PARTICLE_COUNT = 2000;
+        const SPHERE_RADIUS = 150;
+        
+        class Particle {
+            constructor() {
+                this.reset();
+                this.targetX = 0;
+                this.targetY = 0;
+                this.targetZ = 0;
+            }
+            
+            reset() {
+                // Start in sphere formation
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                const r = SPHERE_RADIUS * Math.cbrt(Math.random());
+                
+                this.sphereX = r * Math.sin(phi) * Math.cos(theta);
+                this.sphereY = r * Math.sin(phi) * Math.sin(theta);
+                this.sphereZ = r * Math.cos(phi);
+                
+                this.x = this.sphereX;
+                this.y = this.sphereY;
+                this.z = this.sphereZ;
+                
+                this.vx = 0;
+                this.vy = 0;
+                this.vz = 0;
+                
+                this.size = Math.random() * 2 + 1;
+                this.color = `hsl(${250 + Math.random() * 40}, 70%, ${50 + Math.random() * 20}%)`;
+            }
+            
+            update(targetX, targetY, targetZ, force) {
+                const dx = targetX - this.x;
+                const dy = targetY - this.y;
+                const dz = targetZ - this.z;
+                
+                this.vx += dx * force;
+                this.vy += dy * force;
+                this.vz += dz * force;
+                
+                this.vx *= 0.85;
+                this.vy *= 0.85;
+                this.vz *= 0.85;
+                
+                this.x += this.vx;
+                this.y += this.vy;
+                this.z += this.vz;
+            }
+            
+            draw(centerX, centerY) {
+                const scale = 400 / (400 + this.z);
+                const x2d = this.x * scale + centerX;
+                const y2d = this.y * scale + centerY;
+                const size = this.size * scale;
+                
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = Math.max(0.3, scale);
+                ctx.beginPath();
+                ctx.arc(x2d, y2d, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        const particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(new Particle());
+        }
+        
+        // Create text points
+        function getTextPoints(text, fontSize) {
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = 800;
+            tempCanvas.height = 200;
+            
+            tempCtx.font = `bold ${fontSize}px Arial`;
+            tempCtx.fillStyle = 'white';
+            tempCtx.textAlign = 'center';
+            tempCtx.textBaseline = 'middle';
+            tempCtx.fillText(text, tempCanvas.width / 2, tempCanvas.height / 2);
+            
+            const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const points = [];
+            
+            for (let y = 0; y < tempCanvas.height; y += 3) {
+                for (let x = 0; x < tempCanvas.width; x += 3) {
+                    const index = (y * tempCanvas.width + x) * 4;
+                    if (imageData.data[index + 3] > 128) {
+                        points.push({
+                            x: (x - tempCanvas.width / 2) * 1.5,
+                            y: (y - tempCanvas.height / 2) * 1.5,
+                            z: (Math.random() - 0.5) * 50
+                        });
+                    }
+                }
+            }
+            
+            return points;
+        }
+        
+        const textPoints = getTextPoints(NAME, 80);
+        
+        // Animation states
+        let phase = 0; // 0: sphere, 1: forming text, 2: text formed, 3: returning to sphere, 4: done
+        let time = 0;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        function animate() {
+            ctx.fillStyle = 'rgba(245, 247, 250, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            time++;
+            
+            // Phase timing
+            if (phase === 0 && time > 60) {
+                phase = 1; // Start forming text
+            } else if (phase === 1 && time > 180) {
+                phase = 2; // Text fully formed
+            } else if (phase === 2 && time > 300) {
+                phase = 3; // Return to sphere
+            } else if (phase === 3 && time > 420) {
+                phase = 4; // Complete
+                canvas.classList.add('fade-out');
+                setTimeout(() => {
+                    canvas.style.display = 'none';
+                    mainContent.classList.add('visible');
+                }, 500);
+                return;
+            }
+            
+            particles.forEach((particle, i) => {
+                let targetX, targetY, targetZ, force;
+                
+                if (phase === 0) {
+                    // Rotate sphere
+                    const angle = time * 0.01;
+                    targetX = particle.sphereX * Math.cos(angle) - particle.sphereZ * Math.sin(angle);
+                    targetY = particle.sphereY;
+                    targetZ = particle.sphereX * Math.sin(angle) + particle.sphereZ * Math.cos(angle);
+                    force = 0.02;
+                } else if (phase === 1 || phase === 2) {
+                    // Form text
+                    const point = textPoints[i % textPoints.length];
+                    targetX = point.x;
+                    targetY = point.y;
+                    targetZ = point.z;
+                    force = 0.015;
+                } else if (phase === 3) {
+                    // Return to sphere with rotation
+                    const angle = time * 0.01;
+                    targetX = particle.sphereX * Math.cos(angle) - particle.sphereZ * Math.sin(angle);
+                    targetY = particle.sphereY;
+                    targetZ = particle.sphereX * Math.sin(angle) + particle.sphereZ * Math.cos(angle);
+                    force = 0.018;
+                }
+                
+                particle.update(targetX, targetY, targetZ, force);
+                particle.draw(centerX, centerY);
+            });
+            
+            ctx.globalAlpha = 1;
+            
+            if (phase < 4) {
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        animate();
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
 </body>
 </html>
