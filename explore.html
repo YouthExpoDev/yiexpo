@@ -1,223 +1,52 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Explore Projects — Y-I-Expo</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;700;900&display=swap" rel="stylesheet">
-
-<style>
-  body {
-    margin:0;
-    background:#f7f8fb;
-    font-family:"Hanken Grotesk",sans-serif;
-    color:#0f172a;
-  }
-
-  /* TOPBAR */
-  .topbar {
-    width:100%;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:14px 20px;
-    background:white;
-    box-shadow:0 3px 10px rgba(0,0,0,0.1);
-    position:sticky;
-    top:0;
-    z-index:50;
-  }
-
-  .brand {
-    font-weight:900;
-    font-size:22px;
-    letter-spacing:4px;
-  }
-
-  .top-controls {
-    display:flex;
-    align-items:center;
-    gap:12px;
-  }
-
-  .btn {
-    padding:8px 12px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
-    border:1px solid #ccc;
-    background:#fff;
-  }
-
-  .container {
-    max-width:1100px;
-    margin:30px auto;
-    padding:20px;
-  }
-
-  /* PROJECT CARDS */
-  .project-card {
-    background:white;
-    padding:18px;
-    border-radius:12px;
-    box-shadow:0 6px 18px rgba(0,0,0,0.07);
-    margin-bottom:20px;
-  }
-
-  .topic { font-size:22px; font-weight:900; text-align:right; }
-  .theme { font-size:14px; color:#666; text-align:right; }
-
-  .subject { margin-top:10px; font-size:14px; font-weight:600; }
-
-  .leader-block {
-    margin-top:12px;
-    text-align:right;
-  }
-
-  .leader-block div { margin-bottom:4px; }
-
-  .class-sec {
-    margin-top:12px;
-    font-size:13px;
-    font-weight:600;
-    color:#333;
-  }
-
-  /* DARK MODE */
-  [data-theme="dark"] {
-    background:#0f172a;
-    color:#fff;
-  }
-  [data-theme="dark"] .topbar {
-    background:#1e293b;
-    color:white;
-    box-shadow:none;
-  }
-  [data-theme="dark"] .project-card {
-    background:#273349;
-    box-shadow:none;
-  }
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-</head>
-
-<body>
-
-<!-- TOP NAV -->
-<header class="topbar">
-  <div class="brand">Y-I-Expo</div>
-
-  <div class="top-controls">
-    <button class="btn" onclick="history.back()">← Back</button>
-    <button class="btn" id="themeToggle">Dark/Light</button>
-    <button class="btn" onclick="location.href='dev.html'">Developer</button>
-  </div>
-</header>
-
-<div class="container">
-  <h1 style="text-align:center;">Explore Projects</h1>
-
-  <div id="projectList"></div>
-  <div id="errorBox" style="color:red;font-weight:600;margin-top:20px;"></div>
-</div>
-
-
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script>
-/* ============================
-   DARK MODE TOGGLE
-============================ */
-document.getElementById("themeToggle").onclick = () => {
-  const nowDark = document.documentElement.getAttribute("data-theme") === "dark";
-  document.documentElement.setAttribute("data-theme", nowDark ? "" : "dark");
-};
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("projects.xlsx")
+        .then((response) => response.arrayBuffer())
+        .then((data) => {
+            const workbook = XLSX.read(data, { type: "array" });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(sheet);
 
+            const container = document.getElementById("projects-container");
+            container.innerHTML = "";
 
-/* ============================
-   LOAD EXCEL (CASE FIXED)
-============================ */
+            json.forEach((row) => {
+                // === DETECT PARTICIPANT COLUMNS ===
+                const participants = Object.keys(row)
+                    .filter(key => key.toLowerCase().startsWith("participant"))
+                    .map(key => row[key])
+                    .filter(name => name && name.trim() !== "")
+                    .join(", ");  // <-- comma-separated participants
 
-fetch("Projects.xlsx")  // Make sure the name matches EXACTLY
-  .then(r => {
-    if (!r.ok) {
-      document.getElementById("errorBox").innerHTML = "⚠ Could not load Projects.xlsx";
-    }
-    return r.arrayBuffer();
-  })
-  .then(buf => {
-    const wb = XLSX.read(buf, { type: "array" });
-    const sheet = wb.SheetNames[0];
-    const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheet]);
-    renderProjects(rows);
-  })
-  .catch(err => {
-    document.getElementById("errorBox").innerHTML =
-      "⚠ Error loading Excel file: " + err.message;
-  });
+                // === CREATE PROJECT CARD ===
+                const card = document.createElement("div");
+                card.className = "project-card";
 
+                card.innerHTML = `
+                    <div class="project-content">
+                        <h2 class="project-topic">${row.Topic || "No Topic"}</h2>
+                        <p class="project-theme">${row.Theme || ""}</p>
 
-/* ============================
-   RENDER CARDS
-============================ */
-function renderProjects(rows) {
-  const list = document.getElementById("projectList");
-  list.innerHTML = "";
+                        <div class="left-info">
+                            <p class="project-subject">${row.Subject || ""}</p>
+                        </div>
 
-  rows.forEach(row => {
-    const div = document.createElement("div");
-    div.className = "project-card";
+                        <div class="right-info">
+                            <p class="leader-label"><strong>Leader:</strong> ${row.Leader || ""}</p>
+                            <p class="participants-label"><strong>Participants:</strong> ${participants}</p>
+                        </div>
 
-    const participants = row.Participants
-      ? row.Participants.split(",").map(p => `<div>${p.trim()}</div>`).join("")
-      : "";
+                        <div class="bottom-info">
+                            <p class="class-section">Class: ${row.Class || ""} | Section: ${row.Section || ""}</p>
+                        </div>
+                    </div>
+                `;
 
-    div.innerHTML = `
-      <div class="topic">${row.Topic || ""}</div>
-      <div class="theme">${row.Theme || ""}</div>
-
-      <div class="subject">${row.Subject || ""}</div>
-
-      <div class="leader-block">
-        <div><strong>Leader:</strong> ${row.Leader || ""}</div>
-        <strong>Participants:</strong>
-        ${participants}
-      </div>
-
-      <div class="class-sec">
-        Class: ${row.Class || ""} &nbsp;&nbsp; Section: ${row.Section || ""}
-      </div>
-    `;
-
-    list.appendChild(div);
-  });
-}
-
-
-/* ============================
-   DISABLE INSPECT
-============================ */
-document.addEventListener("contextmenu", e => e.preventDefault());
-
-document.addEventListener("keydown", function(e){
-  if (
-    e.key === "F12" ||
-    (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) ||
-    (e.ctrlKey && e.key === "U") ||
-    (e.ctrlKey && e.key === "S")
-  ) {
-    e.preventDefault();
-  }
+                container.appendChild(card);
+            });
+        })
+        .catch((error) => console.error("Error loading spreadsheet:", error));
 });
-
-setInterval(function(){
-  const before = new Date();
-  debugger;
-  if (new Date() - before > 50) {
-    document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;'>Access Blocked</h1>";
-  }
-}, 2000);
 </script>
-
-</body>
-</html>
