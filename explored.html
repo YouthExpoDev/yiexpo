@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Projects - Youth Innovation Expo</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Disable Inspect + Right Click -->
+    <script>
+        document.addEventListener("contextmenu", e => e.preventDefault());
+        document.addEventListener("keydown", e => {
+            if (
+                e.key === "F12" ||
+                (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) ||
+                (e.ctrlKey && e.key === "U")
+            ) {
+                e.preventDefault();
+            }
+        });
+    </script>
+
+    <style>
+        /* TEMP BASIC STRUCTURE — your style.css will override this */
+        body { margin: 0; font-family: Arial; background: #f8f8f8; }
+        .navbar {
+            width: 100%; background: #222; color: white; padding: 15px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 10;
+        }
+        .nav-title { font-family: 'HK Modular', sans-serif; font-size: 26px; }
+        .nav-right button {
+            margin-left: 10px; padding: 8px 15px; border: none; cursor: pointer;
+            background: #444; color: white; border-radius: 5px;
+        }
+        #projects-container { padding: 20px; }
+        .project-card {
+            background: white; padding: 20px; border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px;
+        }
+        .project-topic { text-align: right; font-size: 22px; margin: 0; }
+        .project-theme { text-align: right; color: #555; margin: 5px 0 15px 0; }
+        .left-info { float: left; font-weight: bold; }
+        .right-info { text-align: right; }
+        .bottom-info { margin-top: 20px; font-size: 14px; color: #666; }
+        .clearfix::after { content: ""; display: block; clear: both; }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <div class="navbar">
+        <div class="nav-title">Y-I-Expo</div>
+
+        <div class="nav-right">
+            <button onclick="location.href='index.html'">Home</button>
+            <button onclick="history.back()">Back</button>
+            <button onclick="location.href='dev.html'">Developer</button>
+        </div>
+    </div>
+
+    <h1 style="text-align:center; margin-top:20px;">Explore Projects</h1>
+
+    <div id="projects-container"></div>
+
+    <!-- FETCH DATA FROM GOOGLE SHEETS -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // ⭐ CHANGE ONLY THIS LINE IF YOU EVER CHANGE THE SHEET
+        const SHEET_ID = "1ZQ1g4MwSgCeRuer6gNx6_BY3eit7kddCWjWgDmgTpfA";
+
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+        fetch(url)
+            .then(res => res.text())
+            .then(text => {
+
+                // Google wraps JSON inside weird JS → we extract clean JSON
+                const json = JSON.parse(text.substring(47, text.length - 2));
+
+                const rows = json.table.rows;
+                const cols = json.table.cols.map(col => col.label);
+
+                const container = document.getElementById("projects-container");
+                container.innerHTML = "";
+
+                rows.forEach(r => {
+
+                    const row = {};
+                    cols.forEach((col, i) => {
+                        row[col] = r.c[i] ? r.c[i].v : "";
+                    });
+
+                    // Detect all "Participant..." columns
+                    const participants = Object.keys(row)
+                        .filter(k => k.toLowerCase().startsWith("participant"))
+                        .map(k => row[k])
+                        .filter(name => name && name.trim() !== "")
+                        .join(", ");
+
+                    const card = document.createElement("div");
+                    card.className = "project-card clearfix";
+
+                    card.innerHTML = `
+                        <h2 class="project-topic">${row["Topic"] || "No Topic"}</h2>
+                        <p class="project-theme">${row["Theme"] || ""}</p>
+
+                        <div class="left-info">
+                            <p>${row["Subject"] || ""}</p>
+                        </div>
+
+                        <div class="right-info">
+                            <p><strong>Leader:</strong> ${row["Leader"] || ""}</p>
+                            <p><strong>Participants:</strong> ${participants}</p>
+                        </div>
+
+                        <div class="bottom-info">
+                            <p>Class: ${row["Class"] || ""} | Section: ${row["Section"] || ""}</p>
+                        </div>
+                    `;
+
+                    container.appendChild(card);
+                });
+
+            })
+            .catch(err => console.error("Error fetching data:", err));
+    });
+    </script>
+
+</body>
+</html>
