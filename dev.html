@@ -171,7 +171,7 @@
 <body>
     <div class="profile-card">
         <div class="profile-image-wrapper">
-            <img src="https://via.placeholder.com/120/ff6b6b/ffffff?text=DEV" alt="Developer Profile Picture" class="profile-picture">
+            <img src="ae1848e0d5b5a9c8801fd01ce775f687.jpg" alt="Developer Profile Picture" class="profile-picture">
         </div>
         
         <h1 class="profile-name">Bhavya Sharma</h1>
@@ -184,5 +184,39 @@
             <i class="fas fa-paper-plane"></i> Get In Touch
         </a>
     </div>
+
+<script>
+// Disable right-click context menu
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+// Disable specific key combinations
+document.addEventListener("keydown", function(e) {
+    // F12
+    if (e.key === "F12") e.preventDefault();
+
+    // Ctrl+Shift+I / C / J
+    if (e.ctrlKey && e.shiftKey && ["I","C","J"].includes(e.key)) e.preventDefault();
+
+    // Ctrl+U (view source)
+    if (e.ctrlKey && e.key === "U") e.preventDefault();
+});
+
+// Optional: warn user if dev tools opened (not fully reliable)
+let devtoolsOpen = false;
+setInterval(function() {
+    const widthThreshold = window.outerWidth - window.innerWidth > 100;
+    const heightThreshold = window.outerHeight - window.innerHeight > 100;
+    if (widthThreshold || heightThreshold) {
+        if (!devtoolsOpen) {
+            console.warn("DevTools detected!");
+            devtoolsOpen = true;
+        }
+    } else {
+        devtoolsOpen = false;
+    }
+}, 1000);
+</script>
+
 </body>
 </html>
+
