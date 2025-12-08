@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meet Developer </title>
+    <title>Developer Introduction</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
@@ -12,7 +12,6 @@
             /* Vibrant, light colors */
             --color-primary: #ff6b6b; /* Coral Red */
             --color-secondary: #48dbfb; /* Sky Blue */
-            --color-accent: #feca57; /* Sunny Yellow */
             
             /* Light Backgrounds */
             --color-background-start: #f5f5f5;
@@ -46,7 +45,7 @@
             padding: 20px;
         }
 
-        /* --- Profile Card Container --- */
+        /* --- Profile Card Container (UX Premium) --- */
         .profile-card {
             max-width: 400px;
             width: 100%;
@@ -55,6 +54,7 @@
             border-radius: 20px;
             padding: 40px 30px;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            /* Initial Animation: Card enters smoothly */
             animation: card-in 0.8s ease-out forwards;
             opacity: 0;
         }
@@ -64,17 +64,23 @@
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        /* --- Profile Image --- */
+        /* --- Profile Image with Colorful Border --- */
         .profile-image-wrapper {
             position: relative;
             display: inline-block;
             margin-bottom: 25px;
-            /* Create a colorful, rotating border effect */
-            background: linear-gradient(45deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+            /* Gradient border effect */
+            background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
             border-radius: 50%;
             padding: 5px;
             box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.2);
-            animation: gradient-rotate 4s linear infinite;
+            /* Hover animation for the image */
+            transition: transform 0.3s ease;
+        }
+        
+        .profile-image-wrapper:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 6px rgba(72, 219, 251, 0.4);
         }
 
         .profile-picture {
@@ -86,12 +92,6 @@
             /* Inner border to separate from the gradient */
             border: 5px solid var(--color-text-light);
         }
-        
-        @keyframes gradient-rotate {
-            to {
-                transform: rotate(360deg);
-            }
-        }
 
         /* --- Text Content --- */
         .profile-name {
@@ -101,6 +101,7 @@
             color: var(--color-primary);
             letter-spacing: -1px;
             margin-bottom: 5px;
+            /* Text slide-in animation */
             animation: text-slide 1s ease-out 0.2s forwards;
             opacity: 0;
         }
@@ -111,24 +112,26 @@
             color: #7f8c8d; /* Light gray text */
             margin-bottom: 30px;
             font-weight: 300;
+            /* Text slide-in animation */
             animation: text-slide 1s ease-out 0.4s forwards;
             opacity: 0;
         }
 
         @keyframes text-slide {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- Contact Button --- */
+        /* --- Contact Button (Premium UX) --- */
         .contact-button {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 12px 30px;
+            padding: 14px 35px;
             border: none;
             border-radius: 50px;
-            background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+            /* Vibrant gradient background */
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
             color: var(--color-text-light);
             text-decoration: none;
             font-family: var(--font-heading);
@@ -136,25 +139,37 @@
             font-size: 1.1em;
             cursor: pointer;
             
-            /* Premium Hover Effect */
+            /* Premium Hover/Click Transition */
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
         }
 
         .contact-button i {
             margin-right: 8px;
+            transition: transform 0.3s ease;
         }
 
         .contact-button:hover {
             transform: translateY(-3px) scale(1.02);
-            background: linear-gradient(45deg, var(--color-secondary), var(--color-primary));
+            /* Hover reverses gradient for dynamic effect */
+            background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
             box-shadow: 0 8px 20px rgba(72, 219, 251, 0.5);
         }
+        
+        .contact-button:hover i {
+            transform: translateX(5px);
+        }
+
 
         /* --- Mobile Optimization --- */
         @media (max-width: 480px) {
+            body {
+                align-items: flex-start; /* Start profile higher on small screens */
+                padding-top: 40px;
+            }
             .profile-card {
                 padding: 30px 20px;
+                margin-top: 0;
             }
 
             .profile-name {
@@ -165,6 +180,10 @@
                 width: 100px;
                 height: 100px;
             }
+            
+            .contact-button {
+                width: 100%; /* Full width button for easy tapping */
+            }
         }
     </style>
 </head>
@@ -174,49 +193,15 @@
             <img src="ae1848e0d5b5a9c8801fd01ce775f687.jpg" alt="Developer Profile Picture" class="profile-picture">
         </div>
         
-        <h1 class="profile-name">Bhavya Sharma</h1>
+        <h1 class="profile-name">Bhavya Sahrma</h1>
         
         <p class="profile-tagline">
-            Tech Enthusiastic and Patriot
+            Full-Stack Developer | Innovator | Crafting delightful digital experiences.
         </p>
 
         <a href="thebhavya85@outlook.com" class="contact-button">
-            <i class="fas fa-paper-plane"></i> Get In Touch
+            <i class="fas fa-envelope"></i> Email Me Directly
         </a>
     </div>
-
-<script>
-// Disable right-click context menu
-document.addEventListener("contextmenu", e => e.preventDefault());
-
-// Disable specific key combinations
-document.addEventListener("keydown", function(e) {
-    // F12
-    if (e.key === "F12") e.preventDefault();
-
-    // Ctrl+Shift+I / C / J
-    if (e.ctrlKey && e.shiftKey && ["I","C","J"].includes(e.key)) e.preventDefault();
-
-    // Ctrl+U (view source)
-    if (e.ctrlKey && e.key === "U") e.preventDefault();
-});
-
-// Optional: warn user if dev tools opened (not fully reliable)
-let devtoolsOpen = false;
-setInterval(function() {
-    const widthThreshold = window.outerWidth - window.innerWidth > 100;
-    const heightThreshold = window.outerHeight - window.innerHeight > 100;
-    if (widthThreshold || heightThreshold) {
-        if (!devtoolsOpen) {
-            console.warn("DevTools detected!");
-            devtoolsOpen = true;
-        }
-    } else {
-        devtoolsOpen = false;
-    }
-}, 1000);
-</script>
-
 </body>
 </html>
-
