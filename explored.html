@@ -1,184 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Explore Projects</title>
-<link rel="stylesheet" href="style.css">
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding-top: 70px;
-    }
+  body { font-family: Arial, sans-serif; margin:0; padding-top:70px; background:#fff; color:#111; }
+  .navbar{ position:fixed; top:0; left:0; right:0; height:60px; background:#111; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 20px; z-index:1000;}
+  .brand{ font-family: 'HK Modular', sans-serif; font-size:22px; font-weight:800; }
+  .nav-controls { display:flex; gap:12px; align-items:center; }
+  .nav-controls button, .nav-controls a{ background:transparent; border:none; color:#fff; cursor:pointer; font-size:15px; text-decoration:none; padding:6px 10px; }
+  h1{ text-align:center; margin:18px 0; }
 
-    /* MENU BAR */
-    .navbar {
-        width: 100%;
-        height: 60px;
-        background: #111;
-        color: white;
-        position: fixed;
-        top: 0;
-        left: 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 20px;
-        z-index: 1000;
-    }
+  #projectContainer{ max-width:1100px; margin:0 auto 60px; padding:0 16px; }
 
-    .navbar-left {
-        font-size: 24px;
-        font-weight: bold;
-        font-family: 'HK Modular', sans-serif;
-    }
+  .project-card{ background:#f6f6f6; border-radius:10px; padding:14px; margin:14px 0; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+  .topic{ font-weight:900; font-size:20px; text-align:right; }
+  .theme{ text-align:right; color:#444; margin-top:6px; }
+  .subject{ text-align:left; font-weight:700; margin-top:10px; }
+  .leader{ text-align:right; font-weight:700; margin-top:10px; }
+  .participants{ text-align:right; white-space:pre-line; margin-top:6px; color:#222; }
+  .class-sec{ text-align:left; margin-top:10px; color:#333; font-weight:600; }
 
-    .navbar-right {
-        display: flex;
-        gap: 20px;
-    }
-
-    .navbar-right button, .navbar-right a {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        text-decoration: none;
-    }
-
-    .project-card {
-        width: 90%;
-        margin: 20px auto;
-        padding: 15px;
-        border-radius: 10px;
-        background: #f4f4f4;
-        box-shadow: 0 0 10px rgba(0,0,0,0.08);
-    }
-
-    .topic {
-        font-size: 24px;
-        font-weight: bold;
-        text-align: right;
-    }
-
-    .theme {
-        font-size: 16px;
-        margin-top: 4px;
-        text-align: right;
-    }
-
-    .subject {
-        font-size: 16px;
-        margin-top: 10px;
-        font-weight: bold;
-        text-align: left;
-    }
-
-    .leader {
-        font-size: 17px;
-        font-weight: bold;
-        text-align: right;
-        margin-top: 10px;
-    }
-
-    .participants {
-        font-size: 15px;
-        white-space: pre-line;
-        margin-top: 5px;
-        text-align: right;
-    }
-
-    .class-sec {
-        font-size: 14px;
-        text-align: left;
-        margin-top: 10px;
-        color: #333;
-    }
+  /* small, non-invasive error banner */
+  #errorBox{ max-width:1100px; margin:8px auto; color:#b71c1c; font-weight:700; text-align:center;}
 </style>
+
+<!-- disable inspect & right-click (simple) -->
+<script>
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.addEventListener("keydown", e => {
+    if (e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) ||
+        (e.ctrlKey && e.key === "U") ) {
+      e.preventDefault();
+    }
+  });
+</script>
 </head>
-
 <body>
-
-<!-- MENU BAR -->
-<div class="navbar">
-    <div class="navbar-left">Y-I-Expo</div>
-
-    <div class="navbar-right">
-        <button onclick="window.history.back()">Go Back</button>
-        <a href="dev.html">Developer</a>
-        <button onclick="toggleTheme()">Mode</button>
+  <div class="navbar">
+    <div class="brand">Y-I-Expo</div>
+    <div class="nav-controls">
+      <button onclick="location.href='index.html'">Home</button>
+      <a href="dev.html">Developer</a>
     </div>
-</div>
+  </div>
 
-<h2 style="text-align:center;">Explore All Projects</h2>
-
-<div id="projectContainer"></div>
-
+  <h1>Explore Projects</h1>
+  <div id="errorBox"></div>
+  <div id="projectContainer"></div>
 
 <script>
-// DARK / LIGHT MODE
-function toggleTheme() {
-    document.body.classList.toggle("dark");
-}
+/* Toggle theme small helper */
+function toggleTheme(){ document.body.classList.toggle('dark'); }
 
-// DISABLE INSPECT + RIGHT CLICK
-document.addEventListener("contextmenu", e => e.preventDefault());
-document.addEventListener("keydown", e => {
-    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I","C","J"].includes(e.key)) || (e.ctrlKey && e.key === "U")) {
-        e.preventDefault();
-    }
-});
-
-// FETCH DATA FROM GOOGLE SHEET
-const sheetID = "1ZQ1g4MwSgCeRuer6gNx6_BY3eit7kddCWjWgDmgTpfA";
-const sheetName = "Form_Responses";
-const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+/* Replace only this SHEET_ID if you change sheet later */
+const SHEET_ID = "1ZQ1g4MwSgCeRuer6gNx6_BY3eit7kddCWjWgDmgTpfA";
+const SHEET_NAME = "Form_Responses"; // optional; Google will return first sheet if omitted
+const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
 fetch(url)
-    .then(res => res.text())
-    .then(data => {
-        const json = JSON.parse(data.substr(47).slice(0, -2));
-        const rows = json.table.rows;
+  .then(r => r.text())
+  .then(text => {
+    // extract JSON wrapped by Google
+    try {
+      const json = JSON.parse(text.substring(47, text.length - 2));
+      const cols = json.table.cols.map(c => (c.label || "").trim());
+      const rows = json.table.rows || [];
 
-        const container = document.getElementById("projectContainer");
+      // show detected headers in console (helps debugging)
+      console.log("Detected sheet headers:", cols);
 
-        rows.forEach(row => {
-            const c = row.c;
+      if(!cols.length){
+        document.getElementById('errorBox').innerText = "No headers detected in the sheet. Make sure the sheet has a header row.";
+        return;
+      }
 
-            if (!c[1] || !c[2] || !c[3]) return; // ignore empty rows
+      renderFromSheet(cols, rows);
+    } catch (err) {
+      console.error("Failed to parse sheet JSON:", err);
+      document.getElementById('errorBox').innerText = "Error reading sheet data. Check sheet visibility and Sheet ID.";
+    }
+  })
+  .catch(err => {
+    console.error("Fetch error:", err);
+    document.getElementById('errorBox').innerText = "Could not fetch sheet. Ensure the sheet is public or shared for link viewing.";
+  });
 
-            const subject = c[1].v || "";
-            const topic = c[2].v || "";
-            const theme = c[3].v || "";
-            const className = c[4].v || "";
-            const leader = c[5].v || "";
-            const section = c[6].v || "";
 
-            // collect participants dynamic
-            let participants = [];
-            for (let i = 7; i < c.length; i++) {
-                if (c[i] && c[i].v) participants.push(c[i].v);
-            }
+function safeGetCellValue(r, idx){
+  if(!r || !r.c) return "";
+  const cell = r.c[idx];
+  return (cell && cell.v !== undefined && cell.v !== null) ? String(cell.v) : "";
+}
 
-            const projectHTML = `
-                <div class="project-card">
-                    <div class="topic">${topic}</div>
-                    <div class="theme">${theme}</div>
-                    <div class="subject">${subject}</div>
-                    <div class="leader">Leader: ${leader}</div>
-                    <div class="participants">${participants.join("\n")}</div>
-                    <div class="class-sec">Class: ${className} — Section: ${section}</div>
-                </div>
-            `;
+/* Render using header-aware mapping (no hard-coded indices) */
+function renderFromSheet(cols, rows){
+  const container = document.getElementById('projectContainer');
+  container.innerHTML = "";
 
-            container.innerHTML += projectHTML;
-        });
-    })
-    .catch(err => console.error("Fetch error:", err));
+  // Build a map of header name (normalized) -> index
+  const headerMap = {};
+  cols.forEach((label, i) => {
+    headerMap[label.toLowerCase().trim()] = i;
+  });
+
+  // Helper to get value by header name (case-insensitive)
+  function getByHeader(row, headerName){
+    const idx = headerMap[headerName.toLowerCase().trim()];
+    if(idx === undefined) return "";
+    return safeGetCellValue(row, idx);
+  }
+
+  // For each row, build object using canonical header names if possible
+  rows.forEach(r => {
+    // If entire row is empty, skip
+    const allEmpty = (r.c || []).every(cell => !cell || cell.v === undefined || cell.v === null || String(cell.v).trim() === "");
+    if(allEmpty) return;
+
+    // Use header-aware lookups
+    const topic = getByHeader(r, "Topic") || getByHeader(r, "topic") || "";
+    const theme = getByHeader(r, "Theme") || "";
+    const subject = getByHeader(r, "Subject") || "";
+    const leader = getByHeader(r, "Leader") || "";
+    const className = getByHeader(r, "Class") || "";
+    const section = getByHeader(r, "Section") || "";
+
+    // Collect all columns whose header starts with "participant" (case-insensitive)
+    const participants = [];
+    Object.keys(headerMap).forEach(lowerLabel => {
+      if(lowerLabel.startsWith("participant")) {
+        const idx = headerMap[lowerLabel];
+        const val = safeGetCellValue(r, idx);
+        if(val && val.trim() !== "") participants.push(val.trim());
+      }
+    });
+
+    // If you instead keep participants in one column called "Participants", support that too:
+    if(participants.length === 0){
+      const single = getByHeader(r, "Participants") || getByHeader(r, "participants");
+      if(single && single.trim() !== ""){
+        // if it's comma separated, split; otherwise show as-is
+        if(single.includes(",")){
+          single.split(",").map(s => s.trim()).filter(Boolean).forEach(s => participants.push(s));
+        } else {
+          participants.push(single.trim());
+        }
+      }
+    }
+
+    // Build HTML (participants displayed each on new line)
+    const card = document.createElement('div');
+    card.className = 'project-card';
+
+    card.innerHTML = `
+      <div class="topic">${escapeHtml(topic) || "No Topic"}</div>
+      <div class="theme">${escapeHtml(theme)}</div>
+
+      <div class="subject">${escapeHtml(subject)}</div>
+
+      <div class="leader">Leader: ${escapeHtml(leader)}</div>
+      <div class="participants">${escapeHtml(participants.join("\n"))}</div>
+
+      <div class="class-sec">Class: ${escapeHtml(className)} &nbsp;&nbsp; Section: ${escapeHtml(section)}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+/* small helper to avoid injecting raw HTML from sheet cells */
+function escapeHtml(str){
+  if(!str) return "";
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'", "&#39;");
+}
 </script>
-
 </body>
 </html>
